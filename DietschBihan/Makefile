@@ -2,14 +2,14 @@ CC=gcc
 CFLAGS=-Wall 
 
 
-minigimp: main.o cellule.o
+./bin/minigimp: ./src/main.o ./src/histogramme.o
 		$(CC) -o $@ $^
 
-main.o: main.c cellule.c
-	$(CC) -o $@ -c $< $(CFLAGS)
+./bin/histogramme.o: ./src/histogramme.c ./src/histogramme.h
+	    $(CC) -o $@ -c $< $(CFLAGS)
 
-cellule.o: cellule.c cellule.h
-	     $(CC) -o $@ -c $< $(CFLAGS)
- 
+./bin/main.o: ./src/main.c ./src/histogramme.h
+		$(CC) -o $@ -c $< $(CFLAGS)
+
 clean:
 	rm -rf *.o
