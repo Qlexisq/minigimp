@@ -35,11 +35,12 @@ int main(int argc, char **argv)
         if(strcmp(argv[i],"-h") == 0 || strcmp(argv[i], "-histo") == 0){
             
         }
-        if(strcmp(argv[i],"ADDLUM") == 0) addlumToLUT( pixelNumber, lut, atoi(argv[i+1]));//LANCER LA FCT ADDLUM AVEC LE PARAM i+1 
-        if(strcmp(argv[i],"DIMLUM") == 0) printf("dimlum : %s",argv[i+1]);//LANCER LA FCT ADDLUM AVEC LE PARAM i+1 
-        if(strcmp(argv[i],"ADDCON") == 0) printf("addcon : %s",argv[i+1]);//LANCER LA FCT ADDLUM AVEC LE PARAM i+1 
-        if(strcmp(argv[i],"DIMCON") == 0) printf("dimcon : %s",argv[i+1]);//LANCER LA FCT ADDLUM AVEC LE PARAM i+1 
-        if(strcmp(argv[i],"SEPIA") == 0) printf("sepia : %s",argv[i+1]);//LANCER LA FCT ADDLUM AVEC LE PARAM i+1 
+        if(strcmp(argv[i],"ADDLUM") == 0) addlumToLUT( pixelNumber, lut, atoi(argv[i+1]));
+        if(strcmp(argv[i],"DIMLUM") == 0) dimlumToLUT( pixelNumber, lut, atoi(argv[i+1]));
+        if(strcmp(argv[i],"ADDCON") == 0) addContrast( pixelNumber, lut, atoi(argv[i+1]));
+        if(strcmp(argv[i],"DIMCON") == 0) dimContrast( pixelNumber, lut, atoi(argv[i+1]));
+        if(strcmp(argv[i],"SEPIA") == 0) sepia(pixelNumber, lut, atoi(argv[i+1]));
+        if(strcmp(argv[i],"MIRROR") == 0) mirror(pixelNumber, lut);
     }
     lutToImage(pixelNumber, lut, image.data);
     //récupérer l'output name
