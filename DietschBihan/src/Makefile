@@ -1,9 +1,9 @@
 CC     = gcc
 CFLAGS = -Wall -O2 -Wno-unused-result -g
 LIB    = -lm
-OBJ    = main.o image.o 
+OBJ    = main.o image.o lut.o
 RM     = rm -f
-BIN    = monsieur_Nozick_est_sympa
+BIN    = exe
 DIRNAME = $(shell basename $$PWD)
 BACKUP  = $(shell date +`basename $$PWD`-%m.%d.%H.%M.zip)
 STDNAME = $(DIRNAME).zip
@@ -19,9 +19,14 @@ image.o : image.c image.h
 	$(CC) $(CFLAGS) -c $<  
 	@echo "done..."
 
-main.o : main.c image.o 
+main.o : main.c image.o lut.o
 	@echo "compile main"
 	$(CC) $(CFLAGS) -c $<  
+	@echo "done..."
+
+lut.o : lut.c lut.h
+	@echo "compile lut"
+	$(CC) $(CFLAGS) -c $<
 	@echo "done..."
 
 clean :	
