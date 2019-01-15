@@ -24,7 +24,7 @@ main.o : main.c image.o lut.o
 	$(CC) $(CFLAGS) -c $<  
 	@echo "done..."
 
-lut.o : lut.c lut.h
+lut.o : lut.c lut.h image.o
 	@echo "compile lut"
 	$(CC) $(CFLAGS) -c $<
 	@echo "done..."
