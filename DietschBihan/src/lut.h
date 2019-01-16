@@ -20,7 +20,7 @@ int mirror(int pixelNumber, unsigned char *lut);
 
 
 int initiateLUT2(LUT *lut);
-int lutToImage2(int pixelNumber, LUT *lut, unsigned char *data);
+int lutToImage2(Image *image, LUT *lut);
 int addlumToLUT2(LUT *lut, int percentage);
 int dimlumToLUT2(LUT *lut, int percentage);
 int contrast2(LUT *lut, int percentage, int add);
@@ -29,6 +29,10 @@ int invert(LUT *lut);
 int fullmirror2(Image *image);
 int blackWhite(Image *image);
 int onlyred(Image *image, LUT *lut);
+int redBlue(Image *image, LUT *lut);
 
+int gradient(int *color1, int *color2, Image *image, LUT *lut);
+int yellowPurple(Image *image, LUT *lut);
+int shuffle(int *array, int number);
 
 #endif

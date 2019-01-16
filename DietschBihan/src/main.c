@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     /************************************ NOUVELLE VERSION ********************************************/
 
 
-    int pixelNumber = image.width*image.height;
+    //int pixelNumber = image.width*image.height;
     LUT lut;
     initiateLUT2(&lut);
     
@@ -65,10 +65,12 @@ int main(int argc, char **argv)
         if(strcmp(argv[i],"MIRROR") == 0) fullmirror2(&image);
         if(strcmp(argv[i],"BLACKWHITE") == 0) blackWhite(&image);
         if(strcmp(argv[i],"ONLYRED") == 0) onlyred(&image, &lut);
+        if(strcmp(argv[i],"ONLYRED2") == 0) redBlue(&image, &lut);
+        if(strcmp(argv[i],"BICOLOR") == 0) yellowPurple(&image, &lut);
 
 
     }
-    lutToImage2(pixelNumber, &lut, image.data);
+    lutToImage2(&image, &lut);
 
 
     /***************************************************************************************************/

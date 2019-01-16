@@ -145,7 +145,9 @@ int initiateLUT2(LUT *lut){
 }
 
 //FOnction qui transmet les données du LUT dans data de l'image
-int lutToImage2(int pixelNumber, LUT *lut, unsigned char *data){
+int lutToImage2(Image *image, LUT *lut){
+	int pixelNumber = image->width*image->height;
+	unsigned char *data = image->data;
 	for(int i=0;i<pixelNumber*3;i+=3){
 		data[i] = lut->lutR[data[i]];
 		data[i+1] = lut->lutG[data[i+1]];
@@ -302,6 +304,118 @@ int onlyred(Image *image, LUT *lut){
 	return 0;
 }
 
+int redBlue(Image *image, LUT *lut){
+	//contrast2(lut, 20, 1);
+	//lutToImage2(image, lut);
+	int pixelNumber = image->width*image->height;
+	unsigned char *data = image->data;
+	int avg = 0;
+	for(int i=0;i<pixelNumber*3;i+=3){		
+		avg = (int)(data[i] + data[i+1] + data[i+2])/3;
+		if(avg>128){
+			data[i+1] = 0;
+			data[i+2] = 0;
+		} else{
+			data[i] = 0;
+			data[i+1] = 0;
+		}
+	}
+	return 0;
+}
+
+//fonction honteusement copiée pour shuffle un array en c
+int shuffle(int *array, int number) {    
+	for(int i=0;i<256;i++){
+		if(i<number){
+			array[i] = 1;
+		} else{
+			array[i] = 0;
+		}
+		
+	}
+    size_t i;
+    for (i = 256 - 1; i > 0; i--) {
+        size_t j = (unsigned int) (drand48()*(i+1));
+        int t = array[j];
+        array[j] = array[i];
+        array[i] = t;
+    }
+    return 0;
+}
+
+//fonction qui applique un dégradé entre 2 couleurs à l'image
+int gradient(int *color1, int *color2, Image *image, LUT *lut){
+	LUT tempLUT;
+	initiateLUT2(&tempLUT);
+	int pixelNumber = image->width*image->height;
+	unsigned char *data = image->data;
+	int avg = 0;
+	int redGap = abs(color2[0] - color1[0]);
+	int greenGap = abs(color2[1] - color1[1]);
+	int blueGap = abs(color2[2] - color1[2]);
+	int redArray[256];
+	int greenArray[256];
+	int blueArray[256];
+	shuffle(redArray, redGap);
+	shuffle(greenArray, greenGap);
+	shuffle(blueArray, blueGap);
+	int newRed=color1[0]; int newGreen=color1[1]; int newBlue=color1[2];
+	for(int i=0; i<256; i++){
+		if(redArray[i] == 1){
+			if(color2[0] - color1[0] > 0){
+				newRed = newRed+1;
+				tempLUT.lutR[i]= newRed;
+			} else{
+				newRed = newRed-1;
+				tempLUT.lutR[i]=newRed;
+			}	
+		} else{
+			tempLUT.lutR[i]=newRed;
+		}
+		if(greenArray[i] == 1){
+			if(color2[1] - color1[1] > 0){
+				newGreen = newGreen+1;
+				tempLUT.lutG[i]=newGreen;
+			} else{
+				newGreen = newGreen-1;
+				tempLUT.lutG[i]=newGreen;
+			}
+		} else{
+			tempLUT.lutG[i]=newGreen;
+		}
+		if(blueArray[i] == 1){
+			if(color2[2] - color1[2] > 0){
+				newBlue = newBlue+1;
+				tempLUT.lutB[i]=newBlue;
+			} else{
+				newBlue = newBlue-1;
+				tempLUT.lutB[i]=newBlue;
+			}
+		} else{
+			tempLUT.lutB[i]=newBlue;
+		}
+		printf("%d %d %d\n", newRed, newGreen, newBlue);
+	}
+	for(int i=0; i<pixelNumber*3; i+=3){
+		avg = (int)(data[i] + data[i+1] + data[i+2])/3;
+		data[i] = tempLUT.lutR[avg];
+		data[i+1] = tempLUT.lutG[avg];
+		data[i+2] = tempLUT.lutB[avg];
+	}
+	return 0;
+}
+
+int yellowPurple(Image *image, LUT *lut){
+	int yellow[3] = {0,0,139};
+	int purple[3] = {255,20,147};
+	gradient(yellow, purple, image, lut);
+	return 0;
+}
+
+
+
+
+//PAS FAITE ENCORE
 
 int vMirror(int pixelNumber, unsigned char *data){
 
