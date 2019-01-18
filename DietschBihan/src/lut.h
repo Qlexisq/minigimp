@@ -9,30 +9,22 @@ typedef struct LUT{
 	unsigned char lutB[256];
 }LUT;
 
-int initiateLUT(int pixelNumber, unsigned char *data, unsigned char *lut);
-int lutToImage(int pixelNumber, unsigned char *lut, unsigned char *data);
-int addlumToLUT(int nbPixels, unsigned char *lut, int percentage);
-int contrast(int pixelNumber, unsigned char *lut, int percentage, int add);
-int dimlumToLUT(int pixelNumber, unsigned char *lut, int percentage);
-int dimContrast(int pixelNumber, unsigned char *lut, int percentage);
-int sepia(int pixelNumber, unsigned char *lut, int param);
-int mirror(int pixelNumber, unsigned char *lut);
-
-
-int initiateLUT2(LUT *lut);
-int lutToImage2(Image *image, LUT *lut);
-int addlumToLUT2(LUT *lut, int percentage);
-int dimlumToLUT2(LUT *lut, int percentage);
-int contrast2(LUT *lut, int percentage, int add);
-int sepia2(Image *image);
+int initiateLUT(LUT *lut);
+int lutToImage(Image *image, LUT *lut);
+int addlumToLUT(LUT *lut, int percentage);
+int dimlumToLUT(LUT *lut, int percentage);
+int contrast(LUT *lut, int percentage, int add);
+int sepia(Image *image);
 int invert(LUT *lut);
-int fullmirror2(Image *image);
+int fullmirror(Image *image);
 int blackWhite(Image *image);
 int onlyred(Image *image, LUT *lut);
 int redBlue(Image *image, LUT *lut);
 
-int gradient(int *color1, int *color2, Image *image, LUT *lut);
-int yellowPurple(Image *image, LUT *lut);
+int applyGradient(int *color1, int *color2, LUT *lut);
+int bicolorFilter(Image *image, LUT *lut);
 int shuffle(int *array, int number);
+
+int vMirror(Image *image);
 
 #endif
