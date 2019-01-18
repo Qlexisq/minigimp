@@ -3,7 +3,7 @@
 
 #include "image.h"
 
-void createHistogramGrey(Image image, int width, int height);
-void createHistogramRGB(Image image, int width, int height);
+void createHistogramGrey(Image *image, int width, int height, char *imageName);
+void createHistogramRGB(Image *image, int width, int height, char *imageName);
 
 #endif

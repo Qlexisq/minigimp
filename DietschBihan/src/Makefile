@@ -1,7 +1,7 @@
 CC     = gcc
 CFLAGS = -Wall -O2 -Wno-unused-result -g
 LIB    = -lm
-OBJ    = main.o image.o lut.o
+OBJ    = main.o image.o lut.o histogram.o
 RM     = rm -f
 BIN    = exe
 DIRNAME = $(shell basename $$PWD)
@@ -19,13 +19,18 @@ image.o : image.c image.h
 	$(CC) $(CFLAGS) -c $<  
 	@echo "done..."
 
-main.o : main.c image.o lut.o
+main.o : main.c image.o lut.o histogram.o
 	@echo "compile main"
 	$(CC) $(CFLAGS) -c $<  
 	@echo "done..."
 
 lut.o : lut.c lut.h image.o
 	@echo "compile lut"
+	$(CC) $(CFLAGS) -c $<
+	@echo "done..."
+
+histogram.o : histogram.c histogram.h
+	@echo "compile histogram"
 	$(CC) $(CFLAGS) -c $<
 	@echo "done..."
 

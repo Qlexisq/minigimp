@@ -118,42 +118,6 @@ int invert(LUT *lut){
 	}
 	return 0;
 }
-
-//fonction qui retourne complètement l'image, elle met le dernier pixel à la place du premier et ainsi de suite
-int fullmirror(Image *image){
-	int pixelNumber = image->width*image->height;
-	unsigned char *data = image->data;
-	//recopie de l'image temporaire
-	unsigned char *tempData = malloc(sizeof(unsigned char)*3*pixelNumber);
-	for(int i=0;i<pixelNumber*3;i++){
-		tempData[i] = data[i];
-	}
-	//index qui va servir à savoir si on travaille sur le rouge, le vert ou le bleu
-	int index=0;
-	int arraySize = pixelNumber*3-1;
-	for(int j=0;j<pixelNumber*3;j++){
-		switch (index){
-			//red
-			case 0:;
-				//la composante rouge du pixel est remplacée par celle du pixel qui est son opposé
-				data[j] = tempData[arraySize-j-2];
-				index++;
-				break;
-			//green
-			case 1:;
-				data[j] = tempData[arraySize-j];
-				index++;
-				break;
-			//blue
-			case 2:;
-				data[j] = tempData[arraySize-j+2];
-				index = 0;
-				break;
-		}
-	}
-	return 0;
-
-}
 //fonction pour passer l'image en nuance de gris
 int blackWhite(Image *image){
 	int pixelNumber = image->width*image->height;
@@ -288,56 +252,56 @@ int bicolorFilter(Image *image, LUT *lut){
 }
 
 
+//fonction qui retourne complètement l'image, elle met le dernier pixel à la place du premier et ainsi de suite
+int fullmirror(Image *image){
+	int pixelNumber = image->width*image->height;
+	unsigned char *data = image->data;
+	//recopie de l'image temporaire
+	unsigned char *tempData = malloc(sizeof(unsigned char)*3*pixelNumber);
+	for(int i=0;i<pixelNumber*3;i++){
+		tempData[i] = data[i];
+	}
+	int arraySize = pixelNumber*3-1;
+	for(int j=0;j<pixelNumber*3;j+=3){
+		data[j] = tempData[arraySize-j-2];
+		data[j+1] = tempData[arraySize-j-1];
+		data[j+2] = tempData[arraySize-j];
+	}
+	return 0;
 
+}
 //fonction pour faire une image mirroir
 int vMirror(Image *image){
 	int pixelNumber = image->width*image->height;
 	unsigned char *data = image->data;
-	int index=0;
 	int effectiveWidth = image->width*3-1;
 	int middleValue = effectiveWidth/2;
 	int endLine = effectiveWidth;
 	int secondIndex = 0;
 	int tempValueR = 0, tempValueG =  0, tempValueB = 0;
-	for(int j=0;j<pixelNumber*3;j++){
-		if(j<=middleValue){
-			switch (index){
-				//red
-				case 0:;
-					printf("%d ", data[j]);
-					tempValueR = data[j];
-					data[j] = data[endLine-secondIndex-2];
-					data[endLine-secondIndex-2] = tempValueR;
-					index++;
-					break;
-				//green
-				case 1:;
-					printf("%d ", data[j]);
-					tempValueG = data[j];
-					data[j] = data[endLine-secondIndex];
-					data[endLine-secondIndex] = tempValueG;
-					index++;
-					break;
-				//blue
-				case 2:;
-					printf("%d \n", data[j]);
-					tempValueB = data[j];
-					data[j] = data[endLine-secondIndex+2];
-					data[endLine-secondIndex+2] = tempValueB;
-					index = 0;
-					break;
-			}
-			secondIndex++;
+	for(int j=0;j<pixelNumber*3;j+=3){
+		printf("%d ",j);
+		if(j<=middleValue-2){
+			tempValueR = data[j];
+			data[j] = data[endLine-secondIndex-2];
+			data[endLine-secondIndex-2] = tempValueR;
+			tempValueG = data[j+1];
+			data[j+1] = data[endLine-secondIndex-1];
+			data[endLine-secondIndex-1] = tempValueG;
+			tempValueB = data[j+2];
+			data[j+2] = data[endLine-secondIndex];
+			data[endLine-secondIndex] = tempValueB;
+			secondIndex+=3;
 		} else{
-			if(j == endLine){
+			if(j == endLine-2){
 				middleValue = middleValue+effectiveWidth+1;
 				secondIndex = 0;
 				endLine = endLine+effectiveWidth+1;
 			}
 		}
 		
+		
 	}
 
 	return 0;
-
 }

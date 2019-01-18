@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "histogram.h"
 #include "image.h"
 #define HISTOGRAM_SIZE 256
 
-void createHistogramGrey(Image image, int width, int height){
+void createHistogramGrey(Image *image, int width, int height, char *imageName){
 	int histogramGrey[HISTOGRAM_SIZE];
 	int indexMaxHisto=0; // indice de la valeur maximale de l'histogramme
 
@@ -14,15 +15,14 @@ void createHistogramGrey(Image image, int width, int height){
 	}
 
 	// incrémentation de l'histogramme pour chaque valeur de nuance de gris
-	for(int i=0;i<(image.width*image.height)*3;i=i+3){
-		int greyValue=(image.data[i]+image.data[i+1]+image.data[i+2])/3;
+	for(int i=0;i<(image->width*image->height)*3;i=i+3){
+		int greyValue=(image->data[i]+image->data[i+1]+image->data[i+2])/3;
 		histogramGrey[greyValue] += 1;
 
 		if(histogramGrey[greyValue]>histogramGrey[indexMaxHisto]){
 			indexMaxHisto = greyValue; // mise à jour de l'indice de la valeur max
 		}
 	}
-		printf("index max = %d\n", indexMaxHisto);
 
 	// création de l'image de l'histogramme
 	Image imageHistogram;
@@ -45,11 +45,23 @@ void createHistogramGrey(Image image, int width, int height){
 		}
 	}
 	
-	saveImagePPM(&imageHistogram, "./images/histogram-grey.ppm");
+	char *histoName = "-histogram-grey.ppm";
+	size_t length = strlen(imageName);
+	int sizeToMalloc = (int)length-4;
+	char *imageNameWithoutPPM = malloc(sizeof(char)*(sizeToMalloc+strlen(histoName)));
+	if(imageNameWithoutPPM == NULL){
+		printf("fail memory");
+	}
+	for(int i=0;i<sizeToMalloc;i++){
+		imageNameWithoutPPM[i] = imageName[i];
+	}
+	imageNameWithoutPPM[sizeToMalloc] = '\0';
+	strcat(imageNameWithoutPPM,histoName);
+	saveImagePPM(&imageHistogram, imageNameWithoutPPM);
 	freeImage(&imageHistogram);
 }
 
-void createHistogramRGB(Image image, int width, int height){
+void createHistogramRGB(Image *image, int width, int height, char *imageName){
 
 	// création de tableaux de données d'histogramme pour les nuances de gris, de rouge, de vert et de bleu
 	int histogramRed[HISTOGRAM_SIZE];
@@ -67,10 +79,10 @@ void createHistogramRGB(Image image, int width, int height){
 	}
 
 	// incrémentation des données de chaque histogramme
-	for(int i=0;i<(image.width*image.height)*3;i=i+3){
-		int redValue=image.data[i];
-		int greenValue=image.data[i+1];
-		int blueValue=image.data[i+2];
+	for(int i=0;i<(image->width*image->height)*3;i=i+3){
+		int redValue=image->data[i];
+		int greenValue=image->data[i+1];
+		int blueValue=image->data[i+2];
 
 		histogramRed[redValue] += 1;
 		histogramGreen[greenValue] += 1;
@@ -89,7 +101,6 @@ void createHistogramRGB(Image image, int width, int height){
 			maxValue = histogramBlue[blueValue]; 
 		}
 	}
-		printf("index max = %d\n", maxValue);
 
 	// création de l'image de l'histogramme
 	Image imageHistogram;
@@ -125,6 +136,18 @@ void createHistogramRGB(Image image, int width, int height){
 		}
 	}
 
-	saveImagePPM(&imageHistogram, "./images/histogram-rgb.ppm");
+	char *histoName = "-histogram-rgb.ppm";
+	size_t length = strlen(imageName);
+	int sizeToMalloc = (int)length-4;
+	char *imageNameWithoutPPM = malloc(sizeof(char)*(sizeToMalloc+strlen(histoName)));
+	if(imageNameWithoutPPM == NULL){
+		printf("fail memory");
+	}
+	for(int i=0;i<sizeToMalloc;i++){
+		imageNameWithoutPPM[i] = imageName[i];
+	}
+	imageNameWithoutPPM[sizeToMalloc] = '\0';
+	strcat(imageNameWithoutPPM,histoName);
+	saveImagePPM(&imageHistogram, imageNameWithoutPPM);
 	freeImage(&imageHistogram);
 }
