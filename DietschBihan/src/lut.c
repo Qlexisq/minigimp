@@ -26,6 +26,7 @@ int lutToImage(Image *image, LUT *lut){
 	return 0;
 }
 
+
 //Fonction pour modifier le LUT et rajouter percentage luminosité
 int addlumToLUT(LUT *lut, int percentage){
 	for(int i=0;i<256;i++){
@@ -77,37 +78,6 @@ int contrast(LUT *lut, int percentage, int add){
 	return 0;
 }
 
-/*
-* Valeurs pour bel effet sepia trouvées sur Internet
-*
-* outputRed = (inputRed * .393) + (inputGreen *.769) + (inputBlue * .189)
-* outputGreen = (inputRed * .349) + (inputGreen *.686) + (inputBlue * .168)
-* outputBlue = (inputRed * .272) + (inputGreen *.534) + (inputBlue * .131)
-*
-* Faire un LUT pour du sepia n'a pas de sens car on a besoin des valeurs RGB de chaque pixel pour créer la nouvelle couleur, 
-* il faut donc modifier directement l'image pour faire un sepia correct
-*
-*/
-
-int sepia(Image *image){
-	int pixelNumber = image->width*image->height;
-	unsigned char *data = image->data;
-	int valueR=0,valueG=0,valueB=0;
-	//boucler sur la composante rouge de chaque pixel de l'image
-	for(int i=0;i<pixelNumber*3;i+=3){		
-		//calculs de la nouvelle valeur du rouge, bleu et vert pour chaque pixel
-		valueR = data[i]*0.393 + data[i+1]*0.769 + data[i+2]*0.189;
-		valueG = data[i]*0.349 + data[i+1]*0.686 + data[i+2]*0.168;
-		valueB = data[i]*0.272 + data[i+1]*0.534 + data[i+2]*0.131;
-
-		//affectation et vérification que la valeur ne dépasse pas 255
-		data[i] = (valueR>=255)? 255 : round(valueR);
-		data[i+1] = (valueG>=255)? 255 : round(valueG);
-		data[i+2] = (valueB>=255)? 255 : round(valueB);
-		
-	}
-	return 0;
-}
 
 //fonction qui inverse les couleurs (pas besoin d'explications)
 int invert(LUT *lut){
@@ -134,16 +104,138 @@ int blackWhite(Image *image){
 	return 0;
 }
 
-//Nuances de gris sauf pour le rouge, transformation directe pour les même raisons que le sépia
-int onlyred(Image *image, LUT *lut){
+int sepiaLUT(LUT *lut, Image *image){
+	blackWhite(image);
+	int valueR=0,valueG=0,valueB=0;
+	//boucler sur la composante rouge de chaque pixel de l'image
+	for(int i=0;i<256;i++){
+		valueR = lut->lutR[i]*0.393 + lut->lutG[i]*0.769 + lut->lutB[i]*0.189; 
+		valueG = lut->lutR[i]*0.349 + lut->lutG[i]*0.686 + lut->lutB[i]*0.168; 
+		valueB = lut->lutR[i]*0.272 + lut->lutG[i]*0.534 + lut->lutB[i]*0.131; 
+		lut->lutR[i] = (valueR>=255)? 255 : round(valueR);
+		lut->lutG[i] = (valueG>=255)? 255 : round(valueG);
+		lut->lutB[i] = (valueB>=255)? 255 : round(valueB);
+	}
+	return 0;
+}
+
+//Nuances de gris sauf pour le rouge
+int redish(Image *image, LUT *lut, int param){
 	int pixelNumber = image->width*image->height;
 	unsigned char *data = image->data;
 	int avg = 0;
-	for(int i=0;i<pixelNumber*3;i+=3){		
-		avg = (int)(data[i] + data[i+1] + data[i+2])/3;
-		data[i] = lut->lutR[data[i]];
-		data[i+1] = (avg>=255)? 255 : round(avg);
-		data[i+2] = (avg>=255)? 255 : round(avg);
+	switch(param){
+		case 0:
+			for(int i=0;i<pixelNumber*3;i+=3){		
+				avg = (int)(data[i] + data[i+1] + data[i+2])/3;
+				data[i] = lut->lutR[data[i]];
+				data[i+1] = (avg>=255)? 255 : round(avg);
+				data[i+2] = (avg>=255)? 255 : round(avg);
+			}
+			break;
+		case 1:
+			for(int i=0;i<pixelNumber*3;i+=3){		
+				avg = (int)(data[i] + data[i+1] + data[i+2])/3;
+				data[i] = (avg>=255)? 255 : round(avg);
+				data[i+1] = lut->lutG[data[i+1]];
+				data[i+2] = (avg>=255)? 255 : round(avg);
+			}
+			break;
+		case 2:
+			for(int i=0;i<pixelNumber*3;i+=3){		
+				avg = (int)(data[i] + data[i+1] + data[i+2])/3;
+				data[i] = (avg>=255)? 255 : round(avg);
+				data[i+1] = (avg>=255)? 255 : round(avg);
+				data[i+2] = lut->lutB[data[i+2]];
+			}
+			break;
+	}
+	
+	return 0;
+}
+
+/* Nuances de gris mais une couleur est boostée
+* 0 = red
+* 1 = green
+* 2 = blue
+*/
+int enhanceColor(Image *image, LUT *lut, int param){
+	blackWhite(image);
+	switch(param){
+		case 0:
+			for(int i=0;i<256;i++){		
+				lut->lutR[i]=255;
+			}
+			break;
+		case 1:
+			for(int i=0;i<256;i++){		
+				lut->lutG[i]=255;
+			}
+			break;
+		case 2:
+			for(int i=0;i<256;i++){		
+				lut->lutB[i]=255;
+			}
+			break;
+	}
+	return 0;
+}
+
+
+/* Fonction qui crée une image en dégradés d'une couleur simple
+* 0 = red
+* 1 = green
+* 2 = blue
+* 3 = yellow
+* 4 = purple
+* 5 = orange
+* 6 = pink
+*/
+int onlyOneColorLUT(Image *image, LUT *lut, int param){
+	blackWhite(image);
+	switch(param){
+		case 0:
+			for(int i=0;i<256;i++){		
+				lut->lutG[i]=0;
+				lut->lutB[i]=0;
+			}
+			break;
+		case 1:
+			for(int i=0;i<256;i++){		
+				lut->lutR[i]=0;
+				lut->lutB[i]=0;
+			}
+			break;
+		case 2:
+			for(int i=0;i<256;i++){		
+				lut->lutR[i]=0;
+				lut->lutG[i]=0;
+			}
+			break;
+		case 3:
+			for(int i=0;i<256;i++){		
+				lut->lutB[i]=0;
+			}
+			break;
+		case 4:
+			for(int i=0;i<256;i++){		
+				lut->lutG[i]=0;
+				lut->lutR[i]=lut->lutR[i]/2;
+			}
+			break;
+		case 5:
+			for(int i=0;i<256;i++){		
+				lut->lutG[i]=lut->lutG[i]/2;
+				lut->lutB[i]=0;
+			}
+			break;
+		case 6:
+			for(int i=0;i<256;i++){		
+				lut->lutG[i]=0;
+			}
+			break;
+		default:
+			return 0;
 	}
 	return 0;
 }
@@ -274,34 +366,57 @@ int fullmirror(Image *image){
 int vMirror(Image *image){
 	int pixelNumber = image->width*image->height;
 	unsigned char *data = image->data;
+	//longueur d'une ligne de l'image dans le tableau data
 	int effectiveWidth = image->width*3-1;
+	//la valeur se situant au milieu pour savoir quand arrêter la recopie
 	int middleValue = effectiveWidth/2;
+	//valeur de fin de la ligne (égale à effective width au début pour la première ligne mais sera amené à changer)
 	int endLine = effectiveWidth;
+	//index pour parcourir le tableau dans l'autre sens en même temps que j
 	int secondIndex = 0;
+	//valeurs temporaires pour permettre l'échange 
 	int tempValueR = 0, tempValueG =  0, tempValueB = 0;
+	//on parcourt le tableau de 3 en 3 
 	for(int j=0;j<pixelNumber*3;j+=3){
-		printf("%d ",j);
+		//tant que j n'est pas le rouge du dernier pixel avant la valeur du milieu
 		if(j<=middleValue-2){
+			//on échange la valeur des composantes de couleurs des pixels symétriques par rapport au milieu
+			//rouge
 			tempValueR = data[j];
 			data[j] = data[endLine-secondIndex-2];
 			data[endLine-secondIndex-2] = tempValueR;
+			//vert
 			tempValueG = data[j+1];
 			data[j+1] = data[endLine-secondIndex-1];
 			data[endLine-secondIndex-1] = tempValueG;
+			//bleu
 			tempValueB = data[j+2];
 			data[j+2] = data[endLine-secondIndex];
 			data[endLine-secondIndex] = tempValueB;
+			//on augmente de 3 aussi comme pour j
 			secondIndex+=3;
 		} else{
+			//si j est le dernier pixel de la ligne, alors on passe à la ligne suivante et on change les valeurs
 			if(j == endLine-2){
 				middleValue = middleValue+effectiveWidth+1;
 				secondIndex = 0;
 				endLine = endLine+effectiveWidth+1;
 			}
 		}
-		
-		
 	}
 
 	return 0;
 }
+
+/* value est la force du flou
+*  pour un flou de 1 on prend tous les pixels dans un rayon de 1 autour de celui en question
+*  on fait la moyenne de toutes leurs composantes de couleurs séparemment 
+*  on applique ces 3 valeurs moyennes à l'ensemble des pixels
+*  besoin d'une copie de l'image pour pouvoir changer les valeurs et ne pas altérer le calcul du flou du pixel suivant ?
+*  besoin d'une matrice de pixels pour pouvoir faire cela correctement
+*
+*/
+
+/*int blur(Image *image, int value){
+	//x;y => x+1;y  x-1;y  x;y+1  x;y-1  x+1;y+1 x-1
+}*/

@@ -1,3 +1,5 @@
+//Ce fichier contient les fonctions que nous avions créées au début qui n'implémentaient pas correctement le principe du LUT
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

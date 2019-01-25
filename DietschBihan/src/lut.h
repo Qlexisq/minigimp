@@ -18,8 +18,13 @@ int sepia(Image *image);
 int invert(LUT *lut);
 int fullmirror(Image *image);
 int blackWhite(Image *image);
-int onlyred(Image *image, LUT *lut);
+int redish(Image *image, LUT *lut, int param);
 int redBlue(Image *image, LUT *lut);
+
+int sepiaLUT(LUT *lut, Image *image);
+int onlyOneColorLUT(Image *image, LUT *lut, int param);
+int onlyred2(Image *image, LUT *lut);
+int enhanceColor(Image *image, LUT *lut, int param);
 
 int applyGradient(int *color1, int *color2, LUT *lut);
 int bicolorFilter(Image *image, LUT *lut);
