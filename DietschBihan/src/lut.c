@@ -276,7 +276,9 @@ int shuffle(int *array, int number) {
 }
 
 
-int applyGradient(int *color1, int *color2, LUT *lut){
+int bicolorFilter(Image *image, LUT *lut, int *color1, int *color2){
+	//passage en nuances de gris pour que la transformation fonctionne lorsque l'association avec le LUT se fera
+	blackWhite(image);
 	//calcul de l'écart entre la couleur de départ et la couleur d'arrivée
 	int redGap = abs(color2[0] - color1[0]);
 	int greenGap = abs(color2[1] - color1[1]);
@@ -333,16 +335,6 @@ int applyGradient(int *color1, int *color2, LUT *lut){
 	}
 	return 0;
 }
-//Fonction dans laquelle on déclare les couleurs du dégradé qu'on veut et qui va le créer puis l'appliquer à l'image
-int bicolorFilter(Image *image, LUT *lut){
-	int yellow[3] = {0,0,139};
-	int purple[3] = {255,20,147};
-	applyGradient(yellow, purple, lut);
-	//passage en nuances de gris pour que la transformation fonctionne lorsque l'association avec le LUT se fera
-	blackWhite(image);
-	return 0;
-}
-
 
 //fonction qui retourne complètement l'image, elle met le dernier pixel à la place du premier et ainsi de suite
 int fullmirror(Image *image){

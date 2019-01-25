@@ -8,7 +8,7 @@ typedef struct LUT{
 	unsigned char lutG[256];
 	unsigned char lutB[256];
 }LUT;
-
+//test
 int initiateLUT(LUT *lut);
 int lutToImage(Image *image, LUT *lut);
 int addlumToLUT(LUT *lut, int percentage);
@@ -27,7 +27,7 @@ int onlyred2(Image *image, LUT *lut);
 int enhanceColor(Image *image, LUT *lut, int param);
 
 int applyGradient(int *color1, int *color2, LUT *lut);
-int bicolorFilter(Image *image, LUT *lut);
+int bicolorFilter(Image *image, LUT *lut, int *color1, int *color2);
 int shuffle(int *array, int number);
 
 int vMirror(Image *image);

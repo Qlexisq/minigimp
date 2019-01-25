@@ -60,7 +60,11 @@ int main(int argc, char **argv)
         if(strcmp(argv[i],"ORANGE") == 0) onlyOneColorLUT(&image, &lut,5);
         if(strcmp(argv[i],"PINK") == 0) onlyOneColorLUT(&image, &lut,6);
         if(strcmp(argv[i],"REDBLUE") == 0) redBlue(&image, &lut);
-        if(strcmp(argv[i],"BICOLOR") == 0) bicolorFilter(&image, &lut);
+        if(strcmp(argv[i],"BICOLOR") == 0) {
+            int color1[3] = {atoi(argv[i+1]), atoi(argv[i+2]), atoi(argv[i+3])};
+            int color2[3] = {atoi(argv[i+5]), atoi(argv[i+6]), atoi(argv[i+7])};
+            bicolorFilter(&image, &lut, color1, color2);
+        }
         if(strcmp(argv[i],"MORERED") == 0) enhanceColor(&image, &lut,0);
         if(strcmp(argv[i],"MOREGREEN") == 0) enhanceColor(&image, &lut,1);
         if(strcmp(argv[i],"MOREBLUE") == 0) enhanceColor(&image, &lut,2);
