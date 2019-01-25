@@ -5,14 +5,14 @@
 
 Le programme se lance en ligne de commandes. L'éxecutable se trouve dans le dossier minigimp. 
 
-####Arguments
+###Arguments
 
 1. **DOIT TOUJOURS ETRE LE PREMIER ARGUMENT** Le chemin de l'image PPM à modifier.
 2. *-h width height ou -histo width height* Option qui active la génération d'un histogramme de l'image sous la forme d'une image ppm de taille width x height.
 3. Les différents effets détaillés plus bas. 
 4. **DOIT TOUJOURS ETRE LE DERNIER ARGUMENT** Le chemin de l'image PPM transformée.
 
-####Effets et commandes 
+###Codes des effets
 
 Ces effets peuvent être mis dans n'importe quel ordre en ligne de commande et on peut appliquer autant d'effets qu'on veut à une image.
 
@@ -52,11 +52,11 @@ $ ./minigimp ../images/flowers.ppm -h 800 600 BICOLOR 0 0 229 - 255 105 80 VMIRR
 
 L'image de départ :
 
-!(../images/flowers.ppm)
+![Image de fleur](../images/flowers.ppm)
 
 L'image d'arrivée :
 
-!(../images/output.ppm)
+![Image de fleur transformée](../images/output.ppm)
 
 
 
