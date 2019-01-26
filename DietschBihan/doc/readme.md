@@ -8,7 +8,7 @@ Le programme se lance en ligne de commandes. L'éxecutable se trouve dans le dos
 ### Arguments
 
 1. **DOIT TOUJOURS ETRE LE PREMIER ARGUMENT** Le chemin de l'image PPM à modifier.
-2. *-h width height ou -histo width height* Option qui active la génération d'un histogramme de l'image sous la forme d'une image ppm de taille width x height.
+2. *-h width height ou -histo width height* Option qui active la génération de deux histogrammes de l'image. L'histogramme des nuances de gris et l'histogramme de couleurs RVB. Ils sont générés sous la forme d'une image ppm de taille width x height.
 3. Les différents effets détaillés plus bas. 
 4. **DOIT TOUJOURS ETRE LE DERNIER ARGUMENT** Le chemin de l'image PPM transformée.
 
